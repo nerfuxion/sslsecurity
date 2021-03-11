@@ -4,7 +4,7 @@
 
 #www.redshield.co
 
-# websecurity
+# sslsecurity
 Vulnerable SSL webserver and database system - For expermentation and learning
 
 The System consists of two components and one example attack:
