@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
 #https://github.com/nerfuxion/sslsecurity
-#RedShield - Written by Fredrik Söderlund
+#RedShield - Written by Fredrik SÃ¶derlund
 #www.redshield.co
 
 import socket, ssl
@@ -67,10 +67,10 @@ def databaseLoginAndGetUserList():
     dbSocket.connect((dbHost, dbPort))
 
     dbSocket.send(bytes(userName, 'ascii'), len(userName))
-    response = dbSocket.recv(1024)
+    response = dbSocket.recv(2)
     
     dbSocket.send(bytes(userPassword, 'ascii'), len(userPassword))
-    response = dbSocket.recv(1024)
+    response = dbSocket.recv(2)
 
     response = dbSocket.recv(1024)
     dbSocket.close()
