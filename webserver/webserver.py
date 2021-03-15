@@ -66,10 +66,10 @@ def databaseLoginAndGetUserList():
     dbSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     dbSocket.connect((dbHost, dbPort))
 
-    dbSocket.send(bytes(userName, 'ascii'), len(userName))
+    dbSocket.sendall(bytes(userName, 'ascii'))
     response = dbSocket.recv(2)
     
-    dbSocket.send(bytes(userPassword, 'ascii'), len(userPassword))
+    dbSocket.sendall(bytes(userPassword, 'ascii'))
     response = dbSocket.recv(2)
 
     response = dbSocket.recv(1024)
