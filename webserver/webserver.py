@@ -1,10 +1,11 @@
 # -*- coding: cp1252 -*-
 #https://github.com/nerfuxion/sslsecurity
-#RedShield - Written by Fredrik SÃ¶derlund
+#RedShield - Written by Fredrik Söderlund
 #www.redshield.co
 
 import socket, ssl
 import sys
+import signal
 
 
 #Function that builds a html doc populated with user names retrieved from database
@@ -66,10 +67,10 @@ def databaseLoginAndGetUserList():
     dbSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     dbSocket.connect((dbHost, dbPort))
 
-    dbSocket.sendall(bytes(userName, 'ascii'))
+    dbSocket.sendall(bytes(userName, 'ascii'), len(userName))
     response = dbSocket.recv(2)
-    
-    dbSocket.sendall(bytes(userPassword, 'ascii'))
+
+    dbSocket.sendall(bytes(userPassword, 'ascii'), len(userPassword))
     response = dbSocket.recv(2)
 
     response = dbSocket.recv(1024)
@@ -89,6 +90,7 @@ serverPort = 443
 inputBufferSize = 4096
 defaultErrorFile = "www/404.html"
 certificate = "etc/cert.pem"
+
 
 #Check if the database IP address has been supplied
 if len(sys.argv) <= 1:
@@ -119,7 +121,14 @@ while(1 == 1):
         print("ssl error - client probably wants a trustworthy certificate")
         continue
 
-    incomingRequest = sslSocket.recv(inputBufferSize)
+
+    try:
+        incomingRequest = sslSocket.recv(inputBufferSize)
+    except:
+        print("ssl error - exception thrown during recv")
+        sslSocket.close()
+        continue
+
 
     print("incoming request from ip: " + str(acceptAddress[0]) + " on port: " + str(acceptAddress[1]))
 
@@ -159,7 +168,12 @@ while(1 == 1):
             fileDescriptor = open(defaultErrorFile, "rb")
 
         fileContent = fileDescriptor.read()
-        sslSocket.send(fileContent)
+        
+        try:        
+            sslSocket.send(fileContent)
+        except:
+            print("remote peer (probably chrome) closed the connection")
+        
         fileDescriptor.close()
         sslSocket.close()
         acceptSocket.close()
